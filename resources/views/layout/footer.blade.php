@@ -25,10 +25,12 @@
              <div>
                  <h5 class="font-bold mb-4">Navigasi</h5>
                  <ul class="space-y-2 text-sm text-slate-500">
-                     <li><a class="hover:text-primary transition-colors" href="#">Semua Zine</a></li>
-                     <li><a class="hover:text-primary transition-colors" href="#">Kategori Populer</a></li>
-                     <li><a class="hover:text-primary transition-colors" href="#">Penulis Kolektif</a></li>
-                     <li><a class="hover:text-primary transition-colors" href="#">Arsip</a></li>
+                     <li><a class="hover:text-primary transition-colors" href="/">Beranda</a></li>
+                     <li><a class="hover:text-primary transition-colors" href="/tentang-kami">Tentang Kami</a></li>
+                     <li><a class="hover:text-primary transition-colors" href="/katalog-zine">Katalog Zine</a></li>
+                     <li><a class="hover:text-primary transition-colors" href="/artikel">Artikel</a></li>
+                     <li><a class="hover:text-primary transition-colors" href="/event">Acara</a></li>
+                     <li><a class="hover:text-primary transition-colors" href="/galeri">Galeri</a></li>
                  </ul>
              </div>
              <div>
@@ -77,3 +79,10 @@
          </div>
      </div>
  </footer>
+ <script>
+     // Script untuk update tahun di footer
+     const yearSpan = document.getElementById('getYear');
+     if (yearSpan) {
+         yearSpan.textContent = new Date().getFullYear();
+     }
+ </script>

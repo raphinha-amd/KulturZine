@@ -23,8 +23,7 @@
 
     <link rel="canonical" href="{{ url()->current() }}" />
 
-    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
-
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
     @vite('resources/css/app.css')
 
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
@@ -61,12 +60,6 @@
                 const isHidden = menu.classList.toggle('hidden');
                 icon.textContent = isHidden ? 'menu' : 'close';
             });
-        }
-
-        // Script untuk update tahun di footer
-        const yearSpan = document.getElementById('getYear');
-        if (yearSpan) {
-            yearSpan.textContent = new Date().getFullYear();
         }
     </script>
 </body>

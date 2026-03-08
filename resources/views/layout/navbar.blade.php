@@ -12,7 +12,7 @@
                 <a href="/tentang-kami" class="nav-item hover:text-primary transition-colors">Tentang Kami</a>
                 <a href="/katalog-zine" class="nav-item hover:text-primary transition-colors">Katalog Zine</a>
                 <a href="/artikel" class="nav-item hover:text-primary transition-colors">Artikel</a>
-                <a href="/event" class="nav-item hover:text-primary transition-colors">Event</a>
+                <a href="/event" class="nav-item hover:text-primary transition-colors">Acara</a>
                 <a href="/galeri" class="nav-item hover:text-primary transition-colors">Galeri</a>
             </nav>
 
@@ -36,7 +36,7 @@
             <a href="/tentang-kami" class="nav-item hover:text-primary transition-colors">Tentang Kami</a>
             <a href="/katalog-zine" class="nav-item hover:text-primary transition-colors">Katalog Zine</a>
             <a href="/artikel" class="nav-item hover:text-primary transition-colors">Artikel</a>
-            <a href="/event" class="nav-item hover:text-primary transition-colors">Event</a>
+            <a href="/event" class="nav-item hover:text-primary transition-colors">Acara</a>
             <a href="/galeri" class="nav-item hover:text-primary transition-colors">Galeri</a>
             <div class="pt-4 px-3">
                 <button class="w-full bg-primary text-white py-3 rounded-xl font-bold text-sm">Kirim Karya</button>
