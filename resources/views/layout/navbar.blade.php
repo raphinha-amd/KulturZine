@@ -8,12 +8,20 @@
             </div>
 
             <nav class="hidden lg:flex items-center gap-6 flex-1 justify-center font-bold">
-                <a href="/" class="nav-item hover:text-primary transition-colors">Beranda</a>
-                <a href="/tentang-kami" class="nav-item hover:text-primary transition-colors">Tentang Kami</a>
-                <a href="/katalog-zine" class="nav-item hover:text-primary transition-colors">Katalog Zine</a>
-                <a href="/artikel" class="nav-item hover:text-primary transition-colors">Artikel</a>
-                <a href="/event" class="nav-item hover:text-primary transition-colors">Acara</a>
-                <a href="/galeri" class="nav-item hover:text-primary transition-colors">Galeri</a>
+                <a href="/"
+                    class="nav-item hover:text-primary transition-colors {{ request()->is('/') ? 'text-primary' : 'text-slate-600 dark:text-slate-300' }}">Beranda</a>
+                <a href="/tentang-kami"
+                    class="nav-item hover:text-primary transition-colors {{ request()->is('tentang-kami') ? 'text-primary' : 'text-slate-600 dark:text-slate-300' }}">Tentang
+                    Kami</a>
+                <a href="/katalog-zine"
+                    class="nav-item hover:text-primary transition-colors {{ request()->is('katalog-zine*') ? 'text-primary' : 'text-slate-600 dark:text-slate-300' }}">Katalog
+                    Zine</a>
+                <a href="/artikel"
+                    class="nav-item hover:text-primary transition-colors {{ request()->is('artikel*') ? 'text-primary' : 'text-slate-600 dark:text-slate-300' }}">Artikel</a>
+                <a href="/event"
+                    class="nav-item hover:text-primary transition-colors {{ request()->is('event*') ? 'text-primary' : 'text-slate-600 dark:text-slate-300' }}">Acara</a>
+                <a href="/galeri"
+                    class="nav-item hover:text-primary transition-colors {{ request()->is('galeri') ? 'text-primary' : 'text-slate-600 dark:text-slate-300' }}">Galeri</a>
             </nav>
 
             <div class="flex items-center gap-4">
