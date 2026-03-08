@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostCategoryResource\Pages;
-use App\Filament\Resources\PostCategoryResource\RelationManagers;
 use App\Models\PostCategory;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
@@ -16,14 +15,13 @@ use Filament\Tables\Actions\RestoreAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
 class PostCategoryResource extends Resource
 {
     protected static ?string $model = PostCategory::class;
 
+    protected static ?string $navigationGroup = 'Blog';
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form
@@ -45,7 +43,6 @@ class PostCategoryResource extends Resource
 
                 FileUpload::make('featured_image')
                     ->image()
-                    ->required()
                     ->disk('public')
                     ->directory('featured-images')
                     ->visibility('public')
@@ -54,7 +51,6 @@ class PostCategoryResource extends Resource
                     ->maxSize(2048),
 
                 RichEditor::make('description')
-                    ->required()
                     ->columnSpanFull()
                     ->disableAllToolbarButtons(false),
             ]);
@@ -68,15 +64,15 @@ class PostCategoryResource extends Resource
                     ->limit(30)
                     ->searchable()
                     ->label('Category Title')
-                    ->description(fn(PostCategory $record): string => Str::limit($record->description, 50)),
+                    ->description(fn(PostCategory $record) => Str::limit(strip_tags($record->description), 50)),
                 ImageColumn::make('featured_image')
                     ->label('Featured Image')
-                    ->disk('public')
-                    ->size(80),
+                    ->disk('public'),
                 TextColumn::make('created_at')
                     ->since()
-                    ->dateTime()
-                    ->label('Created'),
+                    ->dateTimeTooltip()
+                    ->label('Created')
+                    ->sortable(),
 
 
             ])
