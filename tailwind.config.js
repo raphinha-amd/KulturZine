@@ -8,6 +8,7 @@ export default {
         "./resources/**/*.blade.php",
         "./resources/**/*.js",
         "./resources/**/*.vue",
+        "./vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php", // Tambahkan ini
     ],
     theme: {
         extend: {
@@ -27,5 +28,5 @@ export default {
             },
         },
     },
-    plugins: [forms, containerQueries],
+    plugins: [forms, containerQueries, require("@tailwindcss/typography")],
 };

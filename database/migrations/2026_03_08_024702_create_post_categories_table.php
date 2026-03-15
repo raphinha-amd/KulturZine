@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('post_categories', function (Blueprint $table) {
             $table->id();
             $table->string('title')->nullable();
-            $table->string('slug')->nullable();
+            $table->string('slug')->nullable()->unique();
             $table->string('featured_image')->nullable();
             $table->text('description')->nullable();
             $table->softDeletes();

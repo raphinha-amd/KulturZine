@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
@@ -16,9 +17,18 @@ class Post extends Model
         return 'slug';
     }
 
+    public function getThumbnailUrlAttribute()
+    {
+        if (Str::startsWith($this->featured_image, 'http')) {
+            return $this->featured_image;
+        }
+
+        return asset('storage/' . $this->featured_image);
+    }
+
     public function category()
     {
-        return $this->belongsTo(PostCategory::class);
+        return $this->belongsTo(PostCategory::class, 'post_categories_id');
     }
 
     public function tags()

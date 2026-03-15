@@ -32,14 +32,27 @@ class PostCategoryResource extends Resource
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, Forms\Set $set) {
-                        $set('slug', Str::slug($state));
+                    ->afterStateUpdated(function ($state, Forms\Set $set, $record) {
+
+                        $slug = Str::slug($state);
+                        $originalSlug = $slug;
+                        $count = 1;
+
+                        while (
+                            PostCategory::where('slug', $slug)
+                            ->when($record, fn($query) => $query->where('id', '!=', $record->id))
+                            ->exists()
+                        ) {
+                            $slug = $originalSlug . '-' . $count++;
+                        }
+
+                        $set('slug', $slug);
                     }),
 
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
-                    ->unique(ignoreRecord: true),
+                    ->unique(table: 'post_categories', column: 'slug', ignoreRecord: true),
 
                 FileUpload::make('featured_image')
                     ->image()

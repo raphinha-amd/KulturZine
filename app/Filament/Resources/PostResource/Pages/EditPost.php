@@ -19,6 +19,11 @@ class EditPost extends EditRecord
         ];
     }
 
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if ($this->data['use_image_url'] ?? false) {

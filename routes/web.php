@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ArticleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -8,18 +9,21 @@ Route::get('/', function () {
 Route::get('/tentang-kami', function () {
     return view('page.about');
 });
+
+
 Route::get('/katalog-zine', function () {
     return view('page.catalog.catalog');
 });
+
+Route::prefix('artikel')->controller(ArticleController::class)->group(function () {
+    Route::get('/', 'index')->name('article.index');
+    Route::get('/{post}', 'show')->name('article.show');
+});
+
 Route::get('/katalog-zine/detail-zine', function () {
     return view('page.catalog.detail_catalog');
 });
-Route::get('/artikel', function () {
-    return view('page.article.article');
-});
-Route::get('/artikel/detail-artikel', function () {
-    return view('page.article.detail_article');
-});
+
 Route::get('/event', function () {
     return view('page.event.events');
 });

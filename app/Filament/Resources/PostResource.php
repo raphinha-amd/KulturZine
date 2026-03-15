@@ -38,29 +38,41 @@ class PostResource extends Resource
             ->schema([
                 TextInput::make('title')
                     ->required()
-                    ->columnSpanFull()
                     ->maxLength(255)
                     ->live(onBlur: true)
-                    ->afterStateUpdated(function ($state, Forms\Set $set) {
-                        $set('slug', Str::slug($state));
+                    ->afterStateUpdated(function ($state, Forms\Set $set, $record) {
+
+                        $slug = Str::slug($state);
+                        $originalSlug = $slug;
+                        $count = 1;
+
+                        while (
+                            Post::where('slug', $slug)
+                            ->when($record, fn($query) => $query->where('id', '!=', $record->id))
+                            ->exists()
+                        ) {
+                            $slug = $originalSlug . '-' . $count++;
+                        }
+
+                        $set('slug', $slug);
                     }),
 
                 TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
-                    ->unique(ignoreRecord: true)
-                    ->columnSpanFull(),
+                    ->unique(table: 'posts', column: 'slug', ignoreRecord: true),
 
                 Select::make('post_categories_id')
                     ->label('Category')
                     ->options(PostCategory::all()->pluck('title', 'id'))
                     ->searchable()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->required(),
 
                 Toggle::make('use_image_url')
                     ->label('Gunakan URL Gambar')
                     ->reactive()
-                    ->dehydrated(false), // ❗ jangan simpan ke DB
+                    ->dehydrated(false),
 
                 FileUpload::make('featured_image')
                     ->image()
@@ -77,7 +89,7 @@ class PostResource extends Resource
                     ->url()
                     ->columnSpanFull()
                     ->hidden(fn($get) => ! $get('use_image_url'))
-                    ->dehydrated(false), // ❗ jangan simpan langsung
+                    ->dehydrated(false),
 
                 RichEditor::make('content')
                     ->columnSpanFull()
