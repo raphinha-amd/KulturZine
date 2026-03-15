@@ -2,34 +2,28 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PostResource\Pages;
-use App\Filament\Resources\PostResource\RelationManagers;
-use App\Models\Post;
-use App\Models\PostCategory;
-use Dom\Text;
+use App\Filament\Resources\ZineResource\Pages;
+use App\Filament\Resources\ZineResource\RelationManagers;
+use App\Models\Zine;
+use App\Models\ZineCategory;
 use Filament\Forms;
-use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\RestoreAction;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
-class PostResource extends Resource
+class ZineResource extends Resource
 {
-    protected static ?string $model = Post::class;
-    
-    protected static ?string $navigationGroup = 'Blog';
+    protected static ?string $model = Zine::class;
+
+    protected static ?string $navigationGroup = 'Zines';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -37,7 +31,7 @@ class PostResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('title')
+                Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
@@ -48,7 +42,7 @@ class PostResource extends Resource
                         $count = 1;
 
                         while (
-                            Post::where('slug', $slug)
+                            Zine::where('slug', $slug)
                             ->when($record, fn($query) => $query->where('id', '!=', $record->id))
                             ->exists()
                         ) {
@@ -58,52 +52,32 @@ class PostResource extends Resource
                         $set('slug', $slug);
                     }),
 
-                TextInput::make('slug')
+                Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
-                    ->unique(table: 'posts', column: 'slug', ignoreRecord: true),
-
-                Select::make('post_categories_id')
-                    ->label('Category')
-                    ->options(PostCategory::all()->pluck('title', 'id'))
-                    ->searchable()
-                    ->columnSpanFull()
-                    ->required(),
-
-                Toggle::make('use_image_url')
-                    ->label('Gunakan URL Gambar')
-                    ->reactive()
-                    ->dehydrated(false),
-
-                FileUpload::make('featured_image')
-                    ->image()
-                    ->disk('public')
-                    ->directory('featured-images-posts')
-                    ->visibility('public')
-                    ->imageEditor()
-                    ->maxSize(2048)
-                    ->columnSpanFull()
-                    ->hidden(fn($get) => $get('use_image_url')),
-
-                TextInput::make('featured_image_url')
-                    ->label('URL Gambar')
-                    ->url()
-                    ->columnSpanFull()
-                    ->hidden(fn($get) => ! $get('use_image_url'))
-                    ->dehydrated(false),
-
-                RichEditor::make('content')
+                    ->unique(table: 'zines', column: 'slug', ignoreRecord: true),
+                RichEditor::make('description')
                     ->columnSpanFull()
                     ->disableAllToolbarButtons(false),
-
+                Select::make('zine_category_id')
+                    ->required()
+                    ->label('Kategori Zine')
+                    ->options(ZineCategory::all()->pluck('zine_category', 'id'))
+                    ->searchable(),
+                Forms\Components\TextInput::make('author')
+                    ->required(),
+                Forms\Components\TextInput::make('link_pdf')
+                    ->required(),
+                Forms\Components\FileUpload::make('featured_image')
+                    ->image(),
                 Select::make('tags')
-                    ->relationship('tags', 'name')
+                    ->relationship('tags', 'zine_tag')
                     ->multiple()
                     ->preload()
                     ->searchable()
                     ->columnSpanFull()
                     ->createOptionForm([
-                        TextInput::make('name')
+                        TextInput::make('zine_tag')
                             ->required()
                             ->maxLength(255)
                             ->live(onBlur: true)
@@ -119,28 +93,37 @@ class PostResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('title')
-                    ->limit(30)
-                    ->searchable()
-                    ->label('Post Title')
-                    ->description(fn(Post $record) => Str::limit(strip_tags($record->content), 50)),
-                ImageColumn::make('featured_image')
-                    ->label('Featured Image')
-                    ->disk('public'),
-                TextColumn::make('created_at')
-                    ->since()
-                    ->dateTimeTooltip()
-                    ->label('Created')
+                Tables\Columns\TextColumn::make('zine_category_id')
+                    ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('author')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('link_pdf')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\ImageColumn::make('featured_image'),
+                Tables\Columns\TextColumn::make('slug')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
-                Tables\Actions\ForceDeleteAction::make(),
-                RestoreAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -161,9 +144,10 @@ class PostResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPosts::route('/'),
-            'create' => Pages\CreatePost::route('/create'),
-            'edit' => Pages\EditPost::route('/{record}/edit'),
+            'index' => Pages\ListZines::route('/'),
+            'create' => Pages\CreateZine::route('/create'),
+            'view' => Pages\ViewZine::route('/{record}'),
+            'edit' => Pages\EditZine::route('/{record}/edit'),
         ];
     }
 

@@ -3,8 +3,8 @@
 @section('content')
     <div class="flex flex-col lg:flex-row min-h-screen">
         <div
-            class="lg:hidden sticky top-16 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 p-4 flex justify-between items-center">
-            <span class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Catalog</span>
+            class="lg:hidden sticky top-16 z-30 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b rounded-lg border-slate-200 dark:border-slate-800 p-4 flex justify-between items-center">
+            <span class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">Katalog Zine</span>
             <button id="filter-open"
                 class="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md">
                 <span class="material-symbols-outlined text-sm">filter_list</span>
@@ -20,7 +20,7 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
 
-            <div class="flex flex-col gap-8">
+            <div class="flex flex-col gap-8 pt-12 lg:pt-0">
                 <div>
                     <h3 class="text-slate-900 dark:text-slate-100 text-sm font-bold uppercase tracking-wider mb-4">Kategori
                     </h3>
@@ -136,7 +136,7 @@
                         <label for="sort-select"
                             class="text-sm font-medium text-slate-700 dark:text-slate-300 whitespace-nowrap">Sortir:</label>
                         <select id="sort-select" name="sort"
-                            class="block rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-100 py-2 px-3 text-sm focus:ring-2 focus:ring-primary focus:border-primary transition appearance-none"
+                            class="block rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-100 py-2 text-sm focus:ring-2 focus:ring-primary focus:border-primary transition appearance-none"
                             onchange="this.form.submit()">
                             <option value="newest" {{ $sort === 'newest' ? 'selected' : '' }}>Terbaru</option>
                             <option value="oldest" {{ $sort === 'oldest' ? 'selected' : '' }}>Terlama</option>

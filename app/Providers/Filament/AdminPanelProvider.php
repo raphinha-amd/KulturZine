@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Navigation\NavigationGroup;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -51,6 +52,11 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->brandName('KulturZine');;
+            ->brandName('KulturZine')
+            ->navigationGroups([
+                NavigationGroup::make('Zines')->label('Zines'),
+                NavigationGroup::make('Blog')->label('Blog'),
+            ])
+            ->collapsibleNavigationGroups(false);
     }
 }

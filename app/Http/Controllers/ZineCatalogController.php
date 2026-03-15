@@ -28,7 +28,7 @@ class ZineCatalogController extends Controller
             ->orderBy('zine_category');
 
         if (! $showAllCategories) {
-            $categoriesQuery->limit(8);
+            $categoriesQuery->limit(5);
         }
 
         $categories = $categoriesQuery->get();
@@ -39,7 +39,7 @@ class ZineCatalogController extends Controller
             ->orderBy('zine_tag');
 
         if (! $showAllTags) {
-            $tagsQuery->limit(8);
+            $tagsQuery->limit(5);
         }
 
         $tags = $tagsQuery->get();
