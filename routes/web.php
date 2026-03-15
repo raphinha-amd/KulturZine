@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ZineCatalogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -11,9 +12,7 @@ Route::get('/tentang-kami', function () {
 });
 
 
-Route::get('/katalog-zine', function () {
-    return view('page.catalog.catalog');
-});
+Route::get('/katalog-zine', [ZineCatalogController::class, 'index'])->name('zine.catalog');
 
 Route::prefix('artikel')->controller(ArticleController::class)->group(function () {
     Route::get('/', 'index')->name('article.index');
