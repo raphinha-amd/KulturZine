@@ -13,15 +13,13 @@ Route::get('/tentang-kami', function () {
 
 
 Route::get('/katalog-zine', [ZineCatalogController::class, 'index'])->name('zine.catalog');
+Route::get('/katalog-zine/{zine:slug}', [ZineCatalogController::class, 'show'])->name('zine.show');
 
 Route::prefix('artikel')->controller(ArticleController::class)->group(function () {
     Route::get('/', 'index')->name('article.index');
     Route::get('/{post}', 'show')->name('article.show');
 });
 
-Route::get('/katalog-zine/detail-zine', function () {
-    return view('page.catalog.detail_catalog');
-});
 
 Route::get('/event', function () {
     return view('page.event.events');

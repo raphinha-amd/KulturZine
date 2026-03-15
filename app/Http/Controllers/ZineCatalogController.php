@@ -15,17 +15,23 @@ class ZineCatalogController extends Controller
         $allowedSort = ['newest', 'oldest'];
 
         if (! in_array($sort, $allowedSort, true)) {
-            $sort = 'newest';
+            $sort = 'popular';
         }
 
         $selectedCategory = $request->input('category');
-        $selectedTagId = $request->integer('tag');
+        $selectedTagSlug = $request->input('tag');
+        $showAllCategories = $request->boolean('show_all_categories');
         $showAllTags = $request->boolean('show_all_tags');
 
-        $categories = ZineCategory::query()
+        $categoriesQuery = ZineCategory::query()
             ->withCount('zines')
-            ->orderBy('zine_category')
-            ->get();
+            ->orderBy('zine_category');
+
+        if (! $showAllCategories) {
+            $categoriesQuery->limit(8);
+        }
+
+        $categories = $categoriesQuery->get();
 
         $tagsQuery = ZineTag::query()
             ->withCount('zines')
@@ -38,10 +44,9 @@ class ZineCatalogController extends Controller
 
         $tags = $tagsQuery->get();
 
-        $selectedTag = null;
-        if ($selectedTagId) {
-            $selectedTag = ZineTag::query()->find($selectedTagId);
-        }
+        $selectedTag = $selectedTagSlug
+            ? ZineTag::query()->where('slug', $selectedTagSlug)->first()
+            : null;
 
         $zines = Zine::query()
             ->with(['category', 'tags'])
@@ -50,15 +55,19 @@ class ZineCatalogController extends Controller
                     $categoryQuery->where('slug', $categorySlug);
                 });
             })
-            ->when($selectedTagId, function ($query) use ($selectedTagId) {
-                $query->whereHas('tags', function ($tagQuery) use ($selectedTagId) {
-                    $tagQuery->whereKey($selectedTagId);
+            ->when($selectedTagSlug, function ($query) use ($selectedTagSlug) {
+                $query->whereHas('tags', function ($tagQuery) use ($selectedTagSlug) {
+                    $tagQuery->where('slug', $selectedTagSlug);
                 });
             })
             ->when($sort === 'oldest', function ($query) {
                 $query->oldest();
-            }, function ($query) {
-                $query->latest();
+            }, function ($query) use ($sort) {
+                if ($sort === 'popular') {
+                    $query->orderBy('views_count', 'desc');
+                } else {
+                    $query->latest();
+                }
             })
             ->paginate(6)
             ->withQueryString();
@@ -69,9 +78,17 @@ class ZineCatalogController extends Controller
             'zines' => $zines,
             'sort' => $sort,
             'selectedCategory' => $selectedCategory,
-            'selectedTagId' => $selectedTagId,
+            'selectedTagSlug' => $selectedTagSlug,
             'selectedTag' => $selectedTag,
+            'showAllCategories' => $showAllCategories,
             'showAllTags' => $showAllTags,
         ]);
+    }
+
+    public function show(Zine $zine)
+    {
+        $zine->load(['category', 'tags']);
+
+        return view('page.catalog.detail_catalog', compact('zine'));
     }
 }

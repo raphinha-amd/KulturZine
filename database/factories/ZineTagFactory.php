@@ -18,6 +18,7 @@ class ZineTagFactory extends Factory
     {
         return [
             'zine_tag' => $this->faker->unique()->word(),
+            'slug' => $this->faker->unique()->slug(),
         ];
     }
 }

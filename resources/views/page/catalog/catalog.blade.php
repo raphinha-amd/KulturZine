@@ -28,7 +28,6 @@
                         <a class="flex items-center justify-between gap-3 px-3 py-2.5 rounded-lg {{ !$selectedCategory ? 'bg-primary/10 text-primary font-semibold' : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800' }} transition-colors"
                             href="{{ route('zine.catalog', array_merge(request()->except(['page', 'category']), ['sort' => $sort])) }}">
                             <span class="text-sm">Semua Zine</span>
-                            <span class="text-xs">{{ $zines->total() }}</span>
                         </a>
 
                         @foreach ($categories as $category)
@@ -39,6 +38,27 @@
                             </a>
                         @endforeach
                     </nav>
+
+                    <div class="mt-4 flex items-center gap-4 text-sm">
+                        @if ($showAllCategories)
+                            <a href="{{ route('zine.catalog', request()->except(['page', 'show_all_categories'])) }}"
+                                class="text-primary font-semibold hover:underline">
+                                Sembunyikan sebagian kategori
+                            </a>
+                        @else
+                            <a href="{{ route('zine.catalog', array_merge(request()->except(['page']), ['show_all_categories' => 1])) }}"
+                                class="text-primary font-semibold hover:underline">
+                                Lihat semua kategori
+                            </a>
+                        @endif
+
+                        @if ($selectedCategory)
+                            <a href="{{ route('zine.catalog', request()->except(['page', 'category'])) }}"
+                                class="text-slate-500 hover:text-primary">
+                                Reset kategori
+                            </a>
+                        @endif
+                    </div>
                 </div>
 
                 <div>
@@ -46,8 +66,8 @@
                     </h3>
                     <div class="flex flex-wrap gap-2">
                         @foreach ($tags as $tag)
-                            <a href="{{ route('zine.catalog', array_merge(request()->except(['page', 'tag']), ['tag' => $tag->id, 'sort' => $sort, 'show_all_tags' => $showAllTags ? 1 : null])) }}"
-                                class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors {{ (int) $selectedTagId === $tag->id ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary' }}">
+                            <a href="{{ route('zine.catalog', array_merge(request()->except(['page', 'tag']), ['tag' => $tag->slug, 'sort' => $sort, 'show_all_tags' => $showAllTags ? 1 : null])) }}"
+                                class="px-3 py-1.5 rounded-full text-xs font-medium transition-colors {{ $selectedTagSlug === $tag->slug ? 'bg-primary/10 text-primary' : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-primary/10 hover:text-primary' }}">
                                 {{ $tag->zine_tag }}
                             </a>
                         @endforeach
@@ -103,11 +123,14 @@
                         @if ($selectedCategory)
                             <input type="hidden" name="category" value="{{ $selectedCategory }}">
                         @endif
-                        @if ($selectedTagId)
-                            <input type="hidden" name="tag" value="{{ $selectedTagId }}">
+                        @if ($selectedTagSlug)
+                            <input type="hidden" name="tag" value="{{ $selectedTagSlug }}">
                         @endif
                         @if ($showAllTags)
                             <input type="hidden" name="show_all_tags" value="1">
+                        @endif
+                        @if ($showAllCategories)
+                            <input type="hidden" name="show_all_categories" value="1">
                         @endif
 
                         <label for="sort-select"
@@ -117,7 +140,6 @@
                             onchange="this.form.submit()">
                             <option value="newest" {{ $sort === 'newest' ? 'selected' : '' }}>Terbaru</option>
                             <option value="oldest" {{ $sort === 'oldest' ? 'selected' : '' }}>Terlama</option>
-                            <option value="popular" {{ $sort === 'popular' ? 'selected' : '' }}>Popular</option>
                         </select>
                     </form>
                 </div>
@@ -157,7 +179,7 @@
                                     @endforelse
                                 </div>
                                 <div class="flex gap-2">
-                                    <a href="{{ $zine->link_pdf }}" target="_blank"
+                                    <a href="{{ route('zine.show', $zine->slug) }}"
                                         class="flex-1 flex items-center justify-center gap-2 bg-primary text-white py-2 rounded-lg text-sm font-bold hover:bg-primary/90 transition-all">
                                         <span class="material-symbols-outlined text-sm">visibility</span>
                                         Baca

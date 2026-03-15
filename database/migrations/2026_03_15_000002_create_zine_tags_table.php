@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('zine_tags', function (Blueprint $table) {
             $table->id();
             $table->string('zine_tag');
+            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

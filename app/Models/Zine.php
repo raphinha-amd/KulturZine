@@ -11,6 +11,11 @@ class Zine extends Model
     /** @use HasFactory<\Database\Factories\ZineFactory> */
     use HasFactory;
 
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
     public function getFeaturedImageUrlAttribute(): ?string
     {
         if (! $this->featured_image) {

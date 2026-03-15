@@ -20,6 +20,7 @@ class ZineFactory extends Factory
         return [
             'zine_category_id' => ZineCategory::factory(),
             'title' => $this->faker->sentence(),
+            'slug' => $this->faker->unique()->slug(),
             'description' => $this->faker->paragraph(),
             'featured_image' => 'https://placehold.co/800x1200?text=Zine',
             'author' => $this->faker->name(),

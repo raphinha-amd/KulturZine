@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('zine_category_id')->constrained('zine_categories')->cascadeOnDelete();
             $table->string('title');
+            $table->string('slug')->unique();
             $table->text('description')->nullable();
             $table->string('author');
             $table->string('link_pdf');
