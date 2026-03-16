@@ -166,7 +166,7 @@
                                 </h3>
                                 <p class="text-xs text-slate-500 mb-3">by {{ $zine->author }}</p>
                                 <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">
-                                    {{ $zine->description ?: 'Belum ada deskripsi untuk zine ini.' }}
+                                    {{ Str::limit(strip_tags($zine->description), 100) }}
                                 </p>
                                 <div class="flex flex-wrap gap-2 mb-6">
                                     @forelse ($zine->tags->take(3) as $tag)

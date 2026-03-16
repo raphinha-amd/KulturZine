@@ -60,7 +60,7 @@
             <section class="border-t border-slate-200 dark:border-slate-800 pt-8">
                 <h3 class="text-xl font-bold mb-4">About this zine</h3>
                 <div class="prose dark:prose-invert max-w-none text-slate-600 dark:text-slate-400 leading-relaxed text-lg">
-                    <p>{{ $zine->description ?: 'Belum ada deskripsi untuk zine ini.' }}</p>
+                    <p>{!! $zine->description ?: 'Belum ada deskripsi untuk zine ini.' !!}</p>
                 </div>
             </section>
 

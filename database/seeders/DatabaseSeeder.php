@@ -17,20 +17,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        PostCategory::factory(10)->create();
-        Tag::factory()->count(10)->create();
-
-        Post::factory()
-            ->count(20)
-            ->create()
-            ->each(function ($post) {
-                $post->tags()->attach(
-                    Tag::inRandomOrder()->take(rand(2, 5))->pluck('id')
-                );
-            });
-
-        $this->call(ZineSeeder::class);
+        $this->call(EventSeeder::class);
     }
 }

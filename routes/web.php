@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ZineCatalogController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('page.home');
-});
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/tentang-kami', function () {
     return view('page.about');
 });
@@ -21,12 +21,8 @@ Route::prefix('artikel')->controller(ArticleController::class)->group(function (
 });
 
 
-Route::get('/event', function () {
-    return view('page.event.events');
-});
-Route::get('/event/detail-event', function () {
-    return view('page.event.detail_event');
-});
+Route::get('/event', [EventController::class, 'index'])->name('event.index');
+Route::get('/event/{event:slug}', [EventController::class, 'show'])->name('event.show');
 Route::get('/galeri', function () {
     return view('page.galleries');
 });

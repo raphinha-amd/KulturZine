@@ -56,6 +56,7 @@ class AdminPanelProvider extends PanelProvider
             ->navigationGroups([
                 NavigationGroup::make('Zines')->label('Zines'),
                 NavigationGroup::make('Blog')->label('Blog'),
+                NavigationGroup::make('Events')->label('Events'),
             ])
             ->collapsibleNavigationGroups(false);
     }

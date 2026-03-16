@@ -2,15 +2,11 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ZineResource\Pages;
-use App\Filament\Resources\ZineResource\RelationManagers;
-use App\Models\Zine;
-use App\Models\ZineCategory;
+use App\Filament\Resources\EventResource\Pages;
+use App\Filament\Resources\EventResource\RelationManagers;
+use App\Models\Event;
+use App\Models\EventCategory;
 use Filament\Forms;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -19,11 +15,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 
-class ZineResource extends Resource
+class EventResource extends Resource
 {
-    protected static ?string $model = Zine::class;
+    protected static ?string $model = Event::class;
 
-    protected static ?string $navigationGroup = 'Zines';
+    protected static ?string $navigationGroup = 'Events';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -31,7 +27,7 @@ class ZineResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('title')
+                Forms\Components\TextInput::make('name_event')
                     ->required()
                     ->maxLength(255)
                     ->live(onBlur: true)
@@ -42,7 +38,7 @@ class ZineResource extends Resource
                         $count = 1;
 
                         while (
-                            Zine::where('slug', $slug)
+                            Event::where('slug', $slug)
                             ->when($record, fn($query) => $query->where('id', '!=', $record->id))
                             ->exists()
                         ) {
@@ -55,37 +51,24 @@ class ZineResource extends Resource
                 Forms\Components\TextInput::make('slug')
                     ->required()
                     ->maxLength(255)
-                    ->unique(table: 'zines', column: 'slug', ignoreRecord: true),
-                RichEditor::make('description')
-                    ->columnSpanFull()
-                    ->disableAllToolbarButtons(false),
-                Select::make('zine_category_id')
+                    ->unique(table: 'events', column: 'slug', ignoreRecord: true),
+                Forms\Components\Select::make('event_category_id')
                     ->required()
-                    ->label('Kategori Zine')
-                    ->options(ZineCategory::all()->pluck('zine_category', 'id'))
+                    ->label('Kategori Event')
+                    ->options(EventCategory::all()->pluck('name_category', 'id'))
                     ->searchable(),
-                Forms\Components\TextInput::make('author')
-                    ->required(),
-                Forms\Components\TextInput::make('link_pdf')
-                    ->required(),
                 Forms\Components\FileUpload::make('featured_image')
                     ->image(),
-                Select::make('tags')
-                    ->relationship('tags', 'zine_tag')
-                    ->multiple()
-                    ->preload()
-                    ->searchable()
-                    ->columnSpanFull()
-                    ->createOptionForm([
-                        TextInput::make('zine_tag')
-                            ->required()
-                            ->maxLength(255)
-                            ->live(onBlur: true)
-                            ->afterStateUpdated(function ($state, Forms\Set $set) {
-                                $set('slug', Str::slug($state));
-                            }),
-                        Hidden::make('slug')
-                    ]),
+                Forms\Components\RichEditor::make('description')
+                    ->columnSpanFull(),
+                Forms\Components\DateTimePicker::make('start_date'),
+                Forms\Components\DateTimePicker::make('end_date'),
+                Forms\Components\TextInput::make('location'),
+                Forms\Components\TextInput::make('volunteer_link'),
+                Forms\Components\Toggle::make('is_active')
+                    ->required(),
+                Forms\Components\Toggle::make('is_volunteer_active')
+                    ->required(),
             ]);
     }
 
@@ -93,15 +76,28 @@ class ZineResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('category.zine_category')
-                    ->numeric()
+                Tables\Columns\TextColumn::make('category.name_category')
+                    ->label('Event Category')
                     ->sortable(),
-                Tables\Columns\TextColumn::make('title')
+                Tables\Columns\TextColumn::make('name_event')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('author')
+                Tables\Columns\ImageColumn::make('featured_image'),
+                Tables\Columns\TextColumn::make('slug')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('link_pdf')
+                Tables\Columns\TextColumn::make('location')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('start_date')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('end_date')
+                    ->dateTime()
+                    ->sortable(),
+                Tables\Columns\IconColumn::make('is_active')
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -110,19 +106,15 @@ class ZineResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\ImageColumn::make('featured_image'),
-                Tables\Columns\TextColumn::make('slug')
+                Tables\Columns\TextColumn::make('volunteer_link')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('deleted_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\IconColumn::make('is_volunteer_active')
+                    ->boolean(),
             ])
             ->filters([
                 Tables\Filters\TrashedFilter::make(),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -144,10 +136,9 @@ class ZineResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListZines::route('/'),
-            'create' => Pages\CreateZine::route('/create'),
-            'view' => Pages\ViewZine::route('/{record}'),
-            'edit' => Pages\EditZine::route('/{record}/edit'),
+            'index' => Pages\ListEvents::route('/'),
+            'create' => Pages\CreateEvent::route('/create'),
+            'edit' => Pages\EditEvent::route('/{record}/edit'),
         ];
     }
 
