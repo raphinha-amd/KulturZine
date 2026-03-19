@@ -73,8 +73,8 @@
              <p class="text-slate-400 text-xs">© <span id="getYear"></span> ZinePlatform. Made with heart for
                  independent voices.</p>
              <div class="flex gap-6 text-xs text-slate-400">
-                 <a class="hover:text-primary transition-colors" href="#">Kebijakan Privasi</a>
-                 <a class="hover:text-primary transition-colors" href="#">Syarat &amp; Ketentuan</a>
+                 <p class="text-slate-400 text-xs">Developed by - <a class="hover:text-primary transition-colors"
+                         href="https://github.com/raphinha-amd" target="_blank">Rafinha-dev</a></p>
              </div>
          </div>
      </div>
