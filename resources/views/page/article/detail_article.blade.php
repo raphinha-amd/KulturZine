@@ -17,7 +17,8 @@
 
                     <div>
                         <div class="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
-                            <span>Oct 12, 2023</span>
+                            <span class="material-symbols-outlined text-xs">calendar_today</span>
+                            {{ $post->created_at->translatedFormat('l, d F Y') }}
                         </div>
                     </div>
                 </div>

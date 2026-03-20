@@ -4,7 +4,8 @@
 
             <div class="flex-shrink-0 flex items-center gap-2 text-primary">
                 <span class="material-symbols-outlined text-3xl font-bold">menu_book</span>
-                <h1 class="text-slate-900 dark:text-slate-100 text-xl font-extrabold tracking-tight">KulturZine</h1>
+                <h1 class="text-slate-900 dark:text-slate-100 text-xl font-extrabold tracking-tight"><a
+                        href="/">KulturZine</a></h1>
             </div>
 
             <nav class="hidden lg:flex items-center gap-6 flex-1 justify-center font-bold">
@@ -25,10 +26,11 @@
             </nav>
 
             <div class="flex items-center gap-4">
-                <button
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfRfyq1pTBY7Si8_YnzX2NliqyJkzMtBfNjklgDexIVoNHioQ/viewform"
+                    target="_blank"
                     class="hidden lg:block bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-sm">
                     Kirim Karya
-                </button>
+                </a>
 
                 <button id="menu-toggle" class="lg:hidden p-2 text-slate-600 dark:text-slate-300">
                     <span id="menu-icon" class="material-symbols-outlined text-2xl">menu</span>
@@ -46,9 +48,11 @@
             <a href="/artikel" class="nav-item hover:text-primary transition-colors">Artikel</a>
             <a href="/event" class="nav-item hover:text-primary transition-colors">Acara</a>
             <a href="/galeri" class="nav-item hover:text-primary transition-colors">Galeri</a>
-            <div class="pt-4 px-3">
-                <button class="w-full bg-primary text-white py-3 rounded-xl font-bold text-sm">Kirim Karya</button>
-            </div>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfRfyq1pTBY7Si8_YnzX2NliqyJkzMtBfNjklgDexIVoNHioQ/viewform"
+                target="_blank"
+                class="block mt-4 bg-primary hover:bg-primary/90 text-white px-4 py-3 rounded-lg font-bold text-sm text-center transition-all shadow-sm">
+                Kirim Karya
+            </a>
         </nav>
     </div>
 </header>
