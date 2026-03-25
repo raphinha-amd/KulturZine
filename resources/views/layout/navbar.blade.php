@@ -26,7 +26,7 @@
             </nav>
 
             <div class="flex items-center gap-4">
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSfRfyq1pTBY7Si8_YnzX2NliqyJkzMtBfNjklgDexIVoNHioQ/viewform"
+                <a href="http://bit.ly/4syZuKw"
                     target="_blank"
                     class="hidden lg:block bg-primary hover:bg-primary/90 text-white px-5 py-2 rounded-lg text-sm font-bold transition-all shadow-sm">
                     Kirim Karya
@@ -48,7 +48,7 @@
             <a href="/artikel" class="nav-item hover:text-primary transition-colors">Artikel</a>
             <a href="/event" class="nav-item hover:text-primary transition-colors">Acara</a>
             <a href="/galeri" class="nav-item hover:text-primary transition-colors">Galeri</a>
-            <a href="https://docs.google.com/forms/d/e/1FAIpQLSfRfyq1pTBY7Si8_YnzX2NliqyJkzMtBfNjklgDexIVoNHioQ/viewform"
+            <a href="http://bit.ly/4syZuKw"
                 target="_blank"
                 class="block mt-4 bg-primary hover:bg-primary/90 text-white px-4 py-3 rounded-lg font-bold text-sm text-center transition-all shadow-sm">
                 Kirim Karya
