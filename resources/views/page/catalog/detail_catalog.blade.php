@@ -32,7 +32,7 @@
 
                 <div class="flex items-center gap-4 mb-8 p-1">
                     <div>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">Dibuat Oleh:</p>
+                        <p class="text-sm text-slate-500 dark:text-slate-400">Penulis :</p>
                         <p class="text-base font-bold text-slate-900 dark:text-slate-100">
                             {{ $zine->author }}
                             <span class="text-slate-400 font-normal mx-2">|</span>
@@ -47,12 +47,7 @@
                     <a href="{{ $zine->link_pdf }}" target="_blank"
                         class="flex-1 min-w-[200px] flex items-center justify-center gap-3 bg-primary text-white py-4 px-8 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-primary/20 transition-all">
                         <span class="material-symbols-outlined">menu_book</span>
-                        Read Online
-                    </a>
-                    <a href="{{ $zine->link_pdf }}" download
-                        class="flex-1 min-w-[200px] flex items-center justify-center gap-3 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 py-4 px-8 rounded-xl font-bold text-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
-                        <span class="material-symbols-outlined">download</span>
-                        Download PDF
+                        baca Online
                     </a>
                 </div>
             </section>

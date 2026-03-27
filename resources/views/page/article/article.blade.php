@@ -57,9 +57,10 @@
                                         {{ $post->title }}
                                     </h2>
                                 </a>
+                                <p class="text-slate-400 text-xs">{{ $post->user->name ?? 'Unknown Author' }}</p>
 
                                 <p
-                                    class="text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed line-clamp-2 md:line-clamp-3">
+                                    class="text-slate-600 dark:text-slate-700 text-sm sm:text-base leading-relaxed line-clamp-2 md:line-clamp-3">
                                     {{ Str::limit(strip_tags($post->content), 150) }}
                                 </p>
 

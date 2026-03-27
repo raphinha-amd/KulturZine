@@ -54,4 +54,14 @@ class User extends Authenticatable implements FilamentUser
     {
         return true;
     }
+
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function zines()
+    {
+        return $this->hasMany(Zine::class);
+    }
 }

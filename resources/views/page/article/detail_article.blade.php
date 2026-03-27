@@ -16,9 +16,15 @@
                 <div class="flex items-center gap-4">
 
                     <div>
-                        <div class="flex items-center gap-3 text-sm text-slate-500 dark:text-slate-400">
-                            <span class="material-symbols-outlined text-xs">calendar_today</span>
-                            {{ $post->created_at->translatedFormat('l, d F Y') }}
+                        <div class="flex flex-col gap-4 text-sm text-slate-500 dark:text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm shrink-0">calendar_today</span>
+                                <span>Dipublikasikan {{ $post->created_at->translatedFormat('d F Y') }}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-sm shrink-0">person</span>
+                                <span>Oleh {{ $post->user->name }}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

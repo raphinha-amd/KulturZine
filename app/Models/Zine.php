@@ -39,4 +39,9 @@ class Zine extends Model
     {
         return $this->belongsToMany(\App\Models\ZineTag::class, 'zine_zine_tag', 'zine_id', 'zine_tag_id')->withTimestamps();
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

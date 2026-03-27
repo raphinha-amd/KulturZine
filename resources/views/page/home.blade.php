@@ -140,7 +140,9 @@
                                 <h3 class="text-xl font-bold group-hover:text-primary transition-colors">
                                     {{ $post->title }}</h3>
                             </a>
-                            <p class="text-slate-500 text-sm line-clamp-2">
+                            <p class="text-slate-400 text-xs">{{ $post->user->name ?? 'Unknown Author' }}</p>
+
+                            <p class="text-slate-700 text-sm line-clamp-2">
                                 {{ Illuminate\Support\Str::limit(strip_tags((string) $post->content), 120) }}</p>
                             <p class="text-slate-400 text-xs">{{ $post->created_at?->translatedFormat('d M Y') }}</p>
                         </div>

@@ -164,7 +164,7 @@
                                     class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1 group-hover:text-primary transition-colors">
                                     {{ $zine->title }}
                                 </h3>
-                                <p class="text-xs text-slate-500 mb-3">by {{ $zine->author }}</p>
+                                <p class="text-xs text-slate-500 mb-3">Penulis: {{ $zine->author }}</p>
                                 <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 mb-4">
                                     {{ Str::limit(strip_tags($zine->description), 100) }}
                                 </p>
@@ -184,7 +184,7 @@
                                         <span class="material-symbols-outlined text-sm">visibility</span>
                                         Baca
                                     </a>
-                                    <a href="{{ $zine->link_pdf }}"
+                                    <a href="{{ $zine->link_pdf }}" target="_blank"
                                         class="px-3 py-2 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-all"
                                         download>
                                         <span class="material-symbols-outlined text-sm">download</span>
