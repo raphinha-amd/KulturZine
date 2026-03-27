@@ -72,7 +72,8 @@ class ZineResource extends Resource
                 Forms\Components\TextInput::make('link_pdf')
                     ->required(),
                 Forms\Components\FileUpload::make('featured_image')
-                    ->image(),
+                    ->image()
+                    ->directory('zines'),
                 Select::make('tags')
                     ->relationship('tags', 'zine_tag')
                     ->multiple()

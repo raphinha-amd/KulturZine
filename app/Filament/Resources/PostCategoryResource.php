@@ -57,7 +57,7 @@ class PostCategoryResource extends Resource
                 FileUpload::make('featured_image')
                     ->image()
                     ->disk('public')
-                    ->directory('featured-images')
+                    ->directory('featured-images-post-categories')
                     ->visibility('public')
                     ->imageEditor()
                     ->columnSpanFull()

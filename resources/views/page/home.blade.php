@@ -98,22 +98,38 @@
     </section>
 
     <section class="mb-24">
-        <h2 class="text-3xl font-bold tracking-tight mb-10 text-center">Eksplorasi Kategori</h2>
+        <h2 class="text-3xl font-bold tracking-tight mb-10 text-center">
+            Eksplorasi Kategori
+        </h2>
+
         <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
             @forelse ($zineCategories as $category)
-                <a class="group relative overflow-hidden rounded-2xl aspect-square bg-slate-900"
-                    href="{{ route('zine.catalog', ['category' => $category->slug]) }}">
-                    <div
-                        class="absolute inset-0 opacity-70 group-hover:scale-110 transition-transform duration-500 bg-gradient-to-br from-primary to-slate-900">
+                @php
+                    $imageUrl = $category->featured_image ? asset('storage/' . $category->featured_image) : null;
+                @endphp
+
+                <a href="{{ route('zine.catalog', ['category' => $category->slug]) }}"
+                    class="group relative overflow-hidden rounded-2xl aspect-square bg-slate-900">
+                    <div class="absolute inset-0 opacity-70 bg-cover bg-center transition-transform duration-500 group-hover:scale-110"
+                        @if ($imageUrl) style="background-image: url('{{ $imageUrl }}');"
+                        @else
+                            style="background-image: linear-gradient(to bottom right, rgb(var(--color-primary)), rgb(15, 23, 42));" @endif>
                     </div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 to-transparent"></div>
+
+
                     <div class="absolute bottom-6 left-6">
-                        <h4 class="text-white text-xl font-bold">{{ $category->zine_category }}</h4>
-                        <p class="text-white/70 text-sm">{{ $category->zines_count }} zine</p>
+                        <h4 class="text-white text-xl font-bold">
+                            {{ $category->zine_category }}
+                        </h4>
+                        <p class="text-white/70 text-sm">
+                            {{ $category->zines_count }} zine
+                        </p>
                     </div>
                 </a>
             @empty
-                <div class="col-span-full text-center text-slate-500">Belum ada kategori zine.</div>
+                <div class="col-span-full text-center text-slate-500">
+                    Belum ada kategori zine.
+                </div>
             @endforelse
         </div>
     </section>

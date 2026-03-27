@@ -52,7 +52,8 @@ class ZineCategoryResource extends Resource
                     ->maxLength(255)
                     ->unique(table: 'zine_categories', column: 'slug', ignoreRecord: true),
                 Forms\Components\FileUpload::make('featured_image')
-                    ->image(),
+                    ->image()
+                    ->directory('featured-images-zine-categories'),
             ]);
     }
 

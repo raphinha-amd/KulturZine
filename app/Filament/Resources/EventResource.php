@@ -58,7 +58,8 @@ class EventResource extends Resource
                     ->options(EventCategory::all()->pluck('name_category', 'id'))
                     ->searchable(),
                 Forms\Components\FileUpload::make('featured_image')
-                    ->image(),
+                    ->image()
+                    ->directory('events'),
                 Forms\Components\RichEditor::make('description')
                     ->columnSpanFull(),
                 Forms\Components\DateTimePicker::make('start_date'),
