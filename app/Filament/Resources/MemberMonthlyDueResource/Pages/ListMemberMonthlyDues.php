@@ -3,14 +3,12 @@
 namespace App\Filament\Resources\MemberMonthlyDueResource\Pages;
 
 use App\Filament\Resources\MemberMonthlyDueResource;
-use App\Models\MemberMonthlyDue;
-use App\Models\User;
+use App\Services\MemberMonthlyDueService;
 use Filament\Actions;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ListRecords;
-use Illuminate\Database\QueryException;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class ListMemberMonthlyDues extends ListRecords
@@ -39,42 +37,9 @@ class ListMemberMonthlyDues extends ListRecords
                         ->prefix('Rp'),
                 ])
                 ->action(function (array $data): void {
-                    $billingMonth = \Illuminate\Support\Carbon::parse($data['billing_month'])->startOfMonth()->toDateString();
+                    $billingMonth = Carbon::parse($data['billing_month'])->startOfMonth();
                     $amount = (float) $data['amount'];
-                    $created = 0;
-
-                    User::role('member')->select('id')->chunkById(100, function ($members) use ($billingMonth, $amount, &$created) {
-                        foreach ($members as $member) {
-                            $exists = MemberMonthlyDue::query()
-                                ->where('user_id', $member->id)
-                                ->whereDate('billing_month', $billingMonth)
-                                ->exists();
-
-                            if ($exists) {
-                                continue;
-                            }
-
-                            try {
-                                MemberMonthlyDue::create([
-                                    'user_id' => $member->id,
-                                    'billing_month' => $billingMonth,
-                                    'amount' => $amount,
-                                ]);
-
-                                $created++;
-                            } catch (QueryException $exception) {
-                                // Ignore duplicate key conflicts when concurrent generation occurs.
-                                if ((string) $exception->getCode() !== '23000') {
-                                    throw $exception;
-                                }
-                            }
-                        }
-                    });
-
-                    Notification::make()
-                        ->title("{$created} tagihan berhasil dibuat")
-                        ->success()
-                        ->send();
+                    app(MemberMonthlyDueService::class)->generateForMonth($billingMonth, $amount);
                 }),
         ];
     }

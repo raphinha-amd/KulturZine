@@ -2,18 +2,16 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Exports\MemberMonthlyDueExporter;
 use App\Filament\Resources\MemberMonthlyDueResource\Pages;
 use App\Models\MemberMonthlyDue;
 use Filament\Forms\Components\TextInput;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class MemberMonthlyDueResource extends Resource
@@ -33,6 +31,27 @@ class MemberMonthlyDueResource extends Resource
     public static function canCreate(): bool
     {
         return false;
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        $user = Auth::user();
+
+        if (! $user || ! $user->hasRole('member')) {
+            return null;
+        }
+
+        $unpaidCount = MemberMonthlyDue::query()
+            ->where('user_id', $user->id)
+            ->whereNull('paid_at')
+            ->count();
+
+        return $unpaidCount > 0 ? (string) $unpaidCount : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
     }
 
     public static function table(Table $table): Table
@@ -79,10 +98,40 @@ class MemberMonthlyDueResource extends Resource
                     }),
             ])
             ->headerActions([
-                ExportAction::make('export')
+                Action::make('export_csv')
                     ->label('Ekspor Laporan')
-                    ->exporter(MemberMonthlyDueExporter::class)
-                    ->visible(fn(): bool => Auth::user()?->hasRole('admin') ?? false),
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->visible(fn(): bool => Auth::user()?->hasRole('admin') ?? false)
+                    ->action(function () {
+                        $rows = MemberMonthlyDue::query()
+                            ->with(['user', 'paidBy'])
+                            ->orderByDesc('billing_month')
+                            ->get();
+
+                        $fileName = 'laporan-iuran-' . now()->format('Ymd-His') . '.csv';
+
+                        return response()->streamDownload(function () use ($rows): void {
+                            $handle = fopen('php://output', 'w');
+
+                            fwrite($handle, "\xEF\xBB\xBF");
+                            fputcsv($handle, ['Member', 'Periode', 'Nominal', 'Status', 'Tanggal Lunas', 'Ditandai Oleh']);
+
+                            foreach ($rows as $row) {
+                                fputcsv($handle, [
+                                    $row->user?->name,
+                                    Carbon::parse($row->billing_month)->translatedFormat('F Y'),
+                                    (float) $row->amount,
+                                    $row->isPaid() ? 'Lunas' : 'Belum Lunas',
+                                    $row->paid_at?->format('Y-m-d H:i:s') ?? '-',
+                                    $row->paidBy?->name ?? '-',
+                                ]);
+                            }
+
+                            fclose($handle);
+                        }, $fileName, [
+                            'Content-Type' => 'text/csv; charset=UTF-8',
+                        ]);
+                    }),
             ])
             ->actions([
                 EditAction::make()
@@ -105,11 +154,6 @@ class MemberMonthlyDueResource extends Resource
                     ->visible(fn(MemberMonthlyDue $record): bool => Auth::user()?->can('markPaid', $record) ?? false)
                     ->action(function (MemberMonthlyDue $record): void {
                         $record->markAsPaid(Auth::user());
-
-                        Notification::make()
-                            ->title('Tagihan berhasil ditandai lunas')
-                            ->success()
-                            ->send();
                     }),
             ])
             ->bulkActions([]);

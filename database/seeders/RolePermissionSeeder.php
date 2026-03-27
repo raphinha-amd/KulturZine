@@ -44,9 +44,9 @@ class RolePermissionSeeder extends Seeder
         $member = Role::firstOrCreate(['name' => 'member']);
 
         // assign
-        $admin->givePermissionTo(Permission::all());
+        $admin->syncPermissions($permissions);
 
-        $member->givePermissionTo([
+        $memberPermissions = [
             'zine.view',
             'zine.create',
             'zine.update',
@@ -60,6 +60,8 @@ class RolePermissionSeeder extends Seeder
             'post.restore',
             'post.forceDelete',
             'dues.view',
-        ]);
+        ];
+
+        $member->syncPermissions($memberPermissions);
     }
 }
