@@ -123,4 +123,6 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'member_monthly_due_amount' => (float) env('MEMBER_MONTHLY_DUE_AMOUNT', 100000),
+
 ];

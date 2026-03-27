@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\Event;
 use App\Models\EventCategory;
 use App\Models\Gallery;
+use App\Models\MemberMonthlyDue;
 use App\Models\Post;
 use App\Models\PostCategory;
 use App\Models\User;
@@ -13,6 +14,7 @@ use App\Models\ZineCategory;
 use App\Policies\EventCategoryPolicy;
 use App\Policies\EventPolicy;
 use App\Policies\GalleryPolicy;
+use App\Policies\MemberMonthlyDuePolicy;
 use App\Policies\PostCategoryPolicy;
 use App\Policies\PostPolicy;
 use App\Policies\UserPolicy;
@@ -46,6 +48,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::policy(PostCategory::class, PostCategoryPolicy::class);
         Gate::policy(ZineCategory::class, ZineCategoryPolicy::class);
         Gate::policy(Gallery::class, GalleryPolicy::class);
+        Gate::policy(MemberMonthlyDue::class, MemberMonthlyDuePolicy::class);
 
         Model::unguard();
         Paginator::useTailwind();

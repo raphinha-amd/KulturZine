@@ -64,4 +64,14 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Zine::class);
     }
+
+    public function monthlyDues()
+    {
+        return $this->hasMany(MemberMonthlyDue::class);
+    }
+
+    public function paidMonthlyDues()
+    {
+        return $this->hasMany(MemberMonthlyDue::class, 'paid_by');
+    }
 }
