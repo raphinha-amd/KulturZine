@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\UserResource\Pages;
-use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -21,6 +20,14 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+
+    // protected static function afterSave($recozrd, array $data): void
+    // {
+    //     if (isset($data['role'])) {
+    //         $record->syncRoles([$data['role']]);
+    //     }
+    // }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -33,7 +40,17 @@ class UserResource extends Resource
                 Forms\Components\DateTimePicker::make('email_verified_at'),
                 Forms\Components\TextInput::make('password')
                     ->password()
-                    ->required(),
+                    ->dehydrated(fn($state) => filled($state))
+                    ->required(fn(string $context) => $context === 'create')
+                    ->dehydrateStateUsing(fn($state) => bcrypt($state)),
+                Forms\Components\Select::make('roles')
+                    ->label('Role')
+                    ->relationship('roles', 'name')
+                    ->required()
+                    ->multiple()
+                    ->maxItems(1)
+                    ->preload()
+                    ->searchable(),
             ]);
     }
 
@@ -45,6 +62,11 @@ class UserResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('email')
                     ->searchable(),
+                Tables\Columns\TextColumn::make('roles.name')
+                    ->label('Role')
+                    ->badge()
+                    ->separator(', ')
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),

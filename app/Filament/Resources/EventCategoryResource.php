@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\EventCategoryResource\Pages;
-use App\Filament\Resources\EventCategoryResource\RelationManagers;
 use App\Models\EventCategory;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -11,7 +10,9 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class EventCategoryResource extends Resource
@@ -21,6 +22,56 @@ class EventCategoryResource extends Resource
     protected static ?string $navigationGroup = 'Events';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static function canManageEventCategory(): bool
+    {
+        return Auth::user()?->hasAnyRole(['admin']) ?? false;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canRestore(Model $record): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canRestoreAny(): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canForceDelete(Model $record): bool
+    {
+        return static::canManageEventCategory();
+    }
+
+    public static function canForceDeleteAny(): bool
+    {
+        return static::canManageEventCategory();
+    }
 
     public static function form(Form $form): Form
     {

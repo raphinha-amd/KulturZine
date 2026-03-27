@@ -3,10 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\PostResource\Pages;
-use App\Filament\Resources\PostResource\RelationManagers;
 use App\Models\Post;
 use App\Models\PostCategory;
-use Dom\Text;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Hidden;
@@ -23,12 +21,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
-    
+
     protected static ?string $navigationGroup = 'Blog';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
@@ -69,6 +68,10 @@ class PostResource extends Resource
                     ->searchable()
                     ->columnSpanFull()
                     ->required(),
+
+                Hidden::make('user_id')
+                    ->default(fn() => Auth::id())
+                    ->dehydrated(fn(string $context): bool => $context === 'create'),
 
                 Toggle::make('use_image_url')
                     ->label('Gunakan URL Gambar')
@@ -169,9 +172,16 @@ class PostResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        $query = parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+
+        // Member hanya bisa lihat post milik mereka sendiri
+        if (! Auth::user()?->hasRole('admin')) {
+            $query->where('user_id', Auth::id());
+        }
+
+        return $query;
     }
 }

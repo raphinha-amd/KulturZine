@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ZineResource\Pages;
-use App\Filament\Resources\ZineResource\RelationManagers;
 use App\Models\Zine;
 use App\Models\ZineCategory;
 use Filament\Forms;
@@ -17,6 +16,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
 class ZineResource extends Resource
@@ -64,6 +64,9 @@ class ZineResource extends Resource
                     ->label('Kategori Zine')
                     ->options(ZineCategory::all()->pluck('zine_category', 'id'))
                     ->searchable(),
+                Hidden::make('user_id')
+                    ->default(fn() => Auth::id())
+                    ->dehydrated(fn(string $context): bool => $context === 'create'),
                 Forms\Components\TextInput::make('author')
                     ->required(),
                 Forms\Components\TextInput::make('link_pdf')
@@ -153,9 +156,16 @@ class ZineResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()
+        $query = parent::getEloquentQuery()
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+
+        // Member hanya bisa lihat zine milik mereka sendiri
+        if (! Auth::user()?->hasRole('admin')) {
+            $query->where('user_id', Auth::id());
+        }
+
+        return $query;
     }
 }
